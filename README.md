@@ -13,7 +13,7 @@ Requires IDA Pro version 7.6'ish.
 
 ### Using
 Invoke the plugin via its hotkey or via the IDA Edit/Plugin menu.
-![main](images/main.png)
+![main](/images/main.png)
 
 There are three signature generation operations:
  1. **Function**: Used to create a unique function entry point, a minimal function signature w/offset, or a whole-body signature depending on the *Options* config (see below).
@@ -31,12 +31,12 @@ Typical use case: For locating a particular offset at runtime to hook, or making
     Special use case for when one of the other actions won't work. Like wanting to ignore the uniqueness of a signature, etc.  
 
 Example signature output:
-![minimal_func_example](images/minimal_func_example.png)
+![minimal_func_example](/images/minimal_func_example.png)
 
 Signature results are pushed to the Windows clipboard for easy CTRL+V pasting into source code, etc.
 
 ##### Options
-![options](images/options.png)
+![options](/images/options.png)
 
 **Output format:**
 **IDA**: The default hex binary search format that IDA and some other tools support, using spaced hex bytes and "??" wildcards.
