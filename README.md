@@ -12,6 +12,7 @@ Since "Ctrl-Alt-S" now combo conflicts with an IDA default, to avoid getting war
 Requires IDA Pro version 7.6'ish.
 
 ### Using
+
 Invoke the plugin via its hotkey or via the IDA Edit/Plugin menu.
 ![main](/images/main.png)
 
@@ -36,6 +37,7 @@ Example signature output:
 Signature results are pushed to the Windows clipboard for easy CTRL+V pasting into source code, etc.
 
 ##### Options
+
 ![options](/images/options.png)
 
 **Output format:**
