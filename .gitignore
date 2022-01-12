@@ -1,0 +1,14 @@
+
+# Misc
+.gitconfig
+desktop.ini
+README.md.backup
+Downloads/
+
+# Visual Studio
+.vs/
+x64/
+*.aps
+
+# PyCharm
+.idea/
