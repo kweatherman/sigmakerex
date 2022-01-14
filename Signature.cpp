@@ -616,7 +616,7 @@ static ea_t FindSigAtAddress(ea_t current_ea, __out SIG &outsig)
 		//if(get_func(current_ea))
 		if (is_func(flags))
 		{
-			LOG_VERBOSE(__FUNCTION__ ": 0x" EAFORMAT " walked into a funcion.\n", current_ea);
+			LOG_VERBOSE(__FUNCTION__ ": 0x" EAFORMAT " walked into a function.\n", current_ea);
 			break;
 		}
 

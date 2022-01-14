@@ -142,7 +142,7 @@ static bool idaapi run(size_t arg)
             "<#Click to open SigMakerEx repo page.#SigmakerEx Github:k::>\n\n"
 
             "Create signature:\n"
-            "<#Attempt to create a unique function signature for selected address at or inside the funcion.#Funciton:R>\n"
+            "<#Attempt to create a unique function signature for selected address at or inside the function.#Function:R>\n"
             "<#Attempt to create a unique signature at selected address.#At address:R>\n"
             "<#Create a raw signiture for selected adress range, unique or not.#From address range           \t:R>>\n\n"
 
