@@ -74,7 +74,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <TargetName>IDA_SigMaker32</TargetName>
+    <TargetName>IDA_SigMaker</TargetName>
     <TargetExt>.dLL</TargetExt>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\imd\</IntDir>
@@ -90,7 +90,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <TargetName>IDA_SigMaker32</TargetName>
+    <TargetName>IDA_SigMaker</TargetName>
     <TargetExt>.dLL</TargetExt>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\imd\</IntDir>
