@@ -212,7 +212,8 @@
       <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(OutDir)$(TargetFileName)" "$(_IDADIR)\plugins"</Command>
+      <Command>C:\Tools\peupdate\peupdate.exe -s -r -q "$(OutDir)$(TargetFileName)"
+copy "$(OutDir)$(TargetFileName)" "$(_IDADIR)\plugins"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
@@ -254,7 +255,8 @@
       <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(OutDir)$(TargetFileName)" "$(_IDADIR)\plugins"</Command>
+      <Command>C:\Tools\peupdate\peupdate.exe -s -r -q "$(OutDir)$(TargetFileName)"
+copy "$(OutDir)$(TargetFileName)" "$(_IDADIR)\plugins"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
