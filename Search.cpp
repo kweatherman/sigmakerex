@@ -143,7 +143,7 @@ PBYTE FindSignatureAVX2(PBYTE data, size_t size, const SIG &sig, BOOL hasWildcar
 	if(!hasWildcards)
 	{
 		// A little faster without wildcards
-		
+
 		// Scan 32 bytes at the time..
 		for (size_t i = 0; i < size; i += 32)
 		{

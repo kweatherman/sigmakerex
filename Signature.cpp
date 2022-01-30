@@ -442,6 +442,7 @@ static ea_t FindMinimalFuncSig(ea_t start_ea, ea_t end_ea, __in const SIGLETS &s
 			c.sig.ToIdaString(str);
 			msg(EAFORMAT ": (%02u, %02u) '%s'\n", c.ea, c.size, c.wildcards, str.c_str());
 		}
+		WaitBox::processIdaEvents();
 	}
 
 	// Return the topmost/best
@@ -730,6 +731,7 @@ BOOL FindFuncXrefSig(ea_t func_ea)
 					msg(EAFORMAT ": (%02u, %02u) '%s'\n", c.ea, c.size, c.wildcards, str.c_str());
 				}
 				msg("\n");
+				WaitBox::processIdaEvents();
 			}
 
 			// Output the topmost/best canidate
@@ -802,10 +804,22 @@ void CreateFunctionSig()
         ea_t sig_ea = FindFuncSig(pfn, siglets, funcSig, outsig, offset);
 		if (sig_ea != BADADDR)
 		{
+			// If entry point criteria is active, check optional max byte size
+			if (settings.funcCriteria == SETTINGS::FUNC_ENTRY_POINT)
+			{
+				if ((settings.maxEntryPointBytes != 0) && ((UINT32) outsig.bytes.size() > settings.maxEntryPointBytes))
+				{
+					LOG_VERBOSE("\nEntry point signature byte count exceeds configured max, looking for a reference function sig instead.\n");
+					if (!FindFuncXrefSig(pfn->start_ea))
+						msg(MSG_TAG "* Failed to find a base or reference signature for selected function. *\n");
+					goto exit;
+				}
+			}
+
 			msg("Function ");
 			OutputSignature(outsig, sig_ea, offset);
+
 		}
-		WaitBox::processIdaEvents();
     }
 	else
     // Not unique, look for a function reference signature instead
@@ -815,6 +829,7 @@ void CreateFunctionSig()
 			msg(MSG_TAG "* Failed to find a base or reference signature for selected function. *\n");
     }
 
+	exit:;
 	WaitBox::hide();
     LOG_VERBOSE("Took %.3f seconds.\n", (GetTimestamp() - procStart));
 	WaitBox::processIdaEvents();

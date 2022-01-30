@@ -30,8 +30,9 @@
 
 template <class T> void CLAMP(T &x, T min, T max) { if (x < min) x = min; else if (x > max) x = max; }
 
-// Semantic versioning for storage 32bit UINT32, using 10 bits (for 0 to 1023) for major, minor, and patch numbers
+// Semantic versioning for storage 32bit UINT32, using 10 bits (0 to 1023) for major, minor, and patch numbers
 // Then 2 bits to (for up to 4 states) to indicate alpha, beta, etc.
+// https://semver.org/
 enum VERSION_STAGE
 {
 	VERSION_RELEASE,
@@ -44,7 +45,7 @@ enum VERSION_STAGE
 #define GET_VERSION_MINOR(_version) ((((UINT32) (_version)) >> 10) & 0x3FF)
 #define GET_VERSION_PATCH(_version) (((UINT32) (_version)) & 0x3FF)
 
-qstring& GetVersionString(UINT32 version, qstring& version_string);
+qstring &GetVersionString(UINT32 version, qstring& version_string);
 
 // ------------------------------------------------------------------------------------------------
 

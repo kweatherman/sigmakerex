@@ -1,6 +1,6 @@
 ## SigMakerEx
 
-Super IDA Pro signature generator plugin.
+Enhanced IDA Pro signature generator plugin.
 
 ### Installation
 
@@ -20,7 +20,7 @@ There are three signature generation operations:
  1. **Function**: Used to create a unique function entry point, a minimal function signature w/offset, or a whole-body signature depending on the *Options* config (see below).
 
     First select any address inside the target function.
-    If the selected function is not unique (for the entry point, or the minimal option) then a signature for a unique function cross reference scan will be attempted.
+    If the selected function is not unique (for the entry point, or the minimal option) then a signature for a unique function cross-reference scan will be attempted.
 
     Typical use cases: Signatures to locate functions at run time in target memory, to locate functions in IDA after executable updates, or to help locate known libraries by signature, etc.
 
@@ -57,20 +57,25 @@ The criteria for "Function" signature generation.
 **Minimal byte size**: Will attempt to generate a minimal, with least wildcards count, byte sized (five are greater) instruction boundary aligned signature inside of the selected function body.
 **Full function body**: Will attempt to generate a unique full function body signature.
 
-For any of these three options, if the function is not unique, an attempt will be made to locate the smallest unique cross reference signature instead. If you wish to make a full or partial function signature for a non-unique function then use the "From address range" option instead.
+For any of these three options, if the function is not unique, an attempt will be made to locate the smallest unique cross-reference signature instead. If you wish to make a full or partial function signature for a non-unique function then use the "From address range" option instead.
 
 **Message level**: Set to "Verbose" for internal signature generation message output to the IDA log window.
 
-**Max function scan refs**: Limit how many function cross references to search when a direct "Function" action signature can't be found. Normally this should be '0' for unlimited search, but for problem cases where there are so many references that causes a slowdown, this can be set to some reasonable limit like 16 or 100.
+**Max function scan refs**: Limit how many function cross-references to search when a direct "Function" action signature can't be found. Normally this should be '0' for unlimited search, but for problem cases where there are so many references that it causes a slowdown, this can be set to some reasonable limit like 16 or 100 to increase the scanning speed.
 
-For the relatively rare case of functions that have their chunks spread over multiple address ranges, the tool will attempt to use just the first chunk. If wishing to make a signature in one of the disjointed chunks, try using the "At address" method. If all else fails, try a "From address range" sig (might take some manual searching for uniqueness).
+For the relatively rare case of functions that have their chunks spread over multiple address ranges, the tool will attempt to use just the first chunk. If wishing to make a signature in one of the disjointed chunks, try using the "At address" method. If all else fails, try a "From address range" sig (which might take some manual searching for uniqueness).
+
+**Max function entry point signature bytes**: When using the "Function" option, and the "Entry point" criteria is configured, optionally limit the maximum entry point signature byte size. The default is '0', for unlimited (which can be up to the entire selected function body byte size) .
+If this limit is exceeded, a cross-reference signature will be looked for instead.
+
+Set to a practical limit like '16' or '32', for preferred typically smaller xref signatures vs potentially very large entry point signatures.
 
 ### Original SigMaker vs SigMakerEx 
 
 1) SigMakerEx ("EX") overall generates smaller and tighter function signatures by using better instruction analysis.
    Example: SigMaker ("SM") wildcards the operand bytes of instruction `sub esp, 90h` (as `"81 EC ?? ?? ?? ??`), throwing out the last four bytes unnecessarily. While EX sees it as an immediate value and keeps the whole `81 EC 90 00 00 00` byte sequence.
 2) EX is better focused on normative function body signature use cases.
-   For SM there is only one controllable option. It will attempt to make a unique signature at wherever address you select in the function. If it can't find one there, it will look for a unique cross reference sig instead only.
+   For SM there is only one controllable option. It will attempt to make a unique signature at wherever address you select in the function. If it can't find one there, it will look for a unique cross-reference sig instead only.
    For EX, since the identified typical use case is to locate function entry points, the smallest entry point signature will be generated when the "Entry point" criteria option is configured.
    For when the "Minimal byte size" option is selected, it will look for the smallest and least wildcard count unique signature (of minimum five bytes) within the whole function body.
 3) SM has more output criteria control over byte vs wildcard count, etc., in it's options dialog. EX assumes you want the best of both (least wildcards and smallest byte size).
