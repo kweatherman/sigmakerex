@@ -135,6 +135,9 @@ static bool idaapi run(size_t arg)
                 "\"Max function scan refs\": Limit how many function cross references to search when a direct \"Function\" action signature can't be found.\n"
                 "Normally this should be '0' for unlimited search, but for problem cases where there are so many references that causes a slowdown, this can be set to some reasonable limit like 16 or 100.\n\n"
 
+				"\"Max function entry point signature bytes\": When using the \"Function\" option, and the \"Entry point\" criteria is configured, optionally limit the maximum entry point signature byte size. The default is '0', for unlimited (which can be up to the entire selected function body byte size).\n"
+                "If this limit is exceeded, an xref signature will be looked for instead.\n\n"
+				
                 "For the relatively rare case of functions that have their chunks spread over multiple address ranges, the tool will attempt to use just the first chunk.\n"
                 "If wishing to make a signature in one of the disjointed chunks, try using the \"At address\" method. If all else fails, try a \"From address range\" sig (might take some manual searching for uniqueness).\n"
 
