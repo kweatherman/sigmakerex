@@ -86,7 +86,8 @@ static bool idaapi run(size_t arg)
         if (action == 0)
         {
             const char mainDialog[] =
-            {
+            {                
+                "STARTITEM 1\n"
                 "BUTTON YES* Continue\n"
 
                 // ---------------- Help ----------------
