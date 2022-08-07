@@ -68,6 +68,8 @@ void DumpFlags(ea_t ea, BOOL withValue = FALSE);
 
 // ------------------------------------------------------------------------------------------------
 
+// Note: Build requires "Code Generation" -> "Enable C++ Exceptions" -> "Yes with SEH Exceptions (/EHa)" 
+// to enable SEH exceptions - along with the default C++ type.
 int ReportException(LPCSTR name, LPEXCEPTION_POINTERS nfo);
 #define EXCEPT() __except(ReportException(__FUNCTION__, GetExceptionInformation())){}
 #define CATCH() catch (...) { msg(MSG_TAG "** Exception in %s()! ***\n", __FUNCTION__); }

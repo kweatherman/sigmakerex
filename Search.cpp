@@ -13,17 +13,17 @@ struct SearchData
 	{
 		if (!buffer)
 		{
-			LOG_VERBOSE(__FUNCTION__ ": min_ea: 0x%llX, max_ea: 0x%llX, size: 0x%llX\n\n", (UINT64) inf.omin_ea, (UINT64) inf.omax_ea, (UINT64) (inf.omax_ea - inf.omin_ea));
+			LOG_VERBOSE(__FUNCTION__ ": min_ea: 0x%llX, max_ea: 0x%llX, size: 0x%llX\n\n", (UINT64) inf.min_ea, (UINT64) inf.max_ea, (UINT64) (inf.max_ea - inf.min_ea));
 
 			// Allocate page buffer to encompass the whole the IDB region
-			size = (UINT64) (inf.omax_ea - inf.omin_ea);
+			size = (UINT64) (inf.max_ea - inf.min_ea);
 			buffer = (PBYTE) VirtualAlloc(NULL, size + 32, (MEM_COMMIT | MEM_RESERVE), PAGE_READWRITE);
 			if (buffer)
 			{
 				// Copy the IDB bytes to the buffer
 				// Simple loop much faster than: get_qword(), get_bytes(), etc.
 				// Note: For bytes that don't exist in the PE file, get_db_byte() will return 0xFF.
-				ea_t  currentEa = inf.omin_ea;
+				ea_t  currentEa = inf.min_ea;
 				PBYTE ptr = buffer;
 				size_t count = size;
 

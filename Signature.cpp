@@ -95,7 +95,7 @@ void OutputSignature(const SIG &sig, ea_t address, UINT32 offset)
 static inline BOOL isJmpCntl(UINT32 type) { return((type >= NN_ja) && (type <= NN_jz)); }             // Return TRUE if a conditional jump instruction
 static inline BOOL isJmpNotCntl(UINT32 type) { return((type >= NN_jmp) && (type <= NN_jmpshort)); }   // Return TRUE if a non-conditional jump instruction
 static inline BOOL isCall(UINT32 type) { return((type >= NN_call) && (type <= NN_callni)); }          // Return TRUE if is a call instruction
-static inline BOOL IsIdbAddress(ea_t address) { return((address >= inf.omin_ea) && (address < inf.omax_ea)); }  // Returns TRUE if address is inside this IDB
+static inline BOOL IsIdbAddress(ea_t address) { return((address >= inf.min_ea) && (address < inf.max_ea)); }  // Returns TRUE if address is inside this IDB
 
 // Return the instruction operand offset if it has one
 static UINT32 OperandOffset(__in insn_t &cmd)
@@ -709,7 +709,7 @@ BOOL FindFuncXrefSig(ea_t func_ea)
 					}
 				}
 				else
-					LOG_VERBOSE(" Ref not unique or error occured, skipped.\n");
+					LOG_VERBOSE(" Ref not unique or error occurred, skipped.\n");
 			}
 
 			sigCount++;
@@ -796,7 +796,7 @@ void CreateFunctionSig()
     // Check if the function is unique first. If it's not, we won't find a unique sig within it
     if (SearchSignature(funcSig) == SSTATUS::UNIQUE)
     {
-        LOG_VERBOSE("Function is unqiue, finding optimal settings sig.\n");
+        LOG_VERBOSE("Function is unique, finding optimal settings sig.\n");
 
         // Find an optimal sig for the unique function
         SIG outsig;
@@ -824,7 +824,7 @@ void CreateFunctionSig()
 	else
     // Not unique, look for a function reference signature instead
     {
-        LOG_VERBOSE("\nFunction is not unqiue, looking for a reference function sig.\n");
+        LOG_VERBOSE("\nFunction is not unique, looking for a reference function sig.\n");
 		if (!FindFuncXrefSig(pfn->start_ea))
 			msg(MSG_TAG "* Failed to find a base or reference signature for selected function. *\n");
     }

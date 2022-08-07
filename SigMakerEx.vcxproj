@@ -28,27 +28,27 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
@@ -212,7 +212,7 @@
       <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>C:\Tools\peupdate\peupdate.exe -s -r -q "$(OutDir)$(TargetFileName)"
+      <Command>@if exist "%_TOOLS%\peupdate\peupdate.exe" ("%_TOOLS%\peupdate\peupdate.exe" -s -r -q "$(OutDir)$(TargetFileName)")
 copy "$(OutDir)$(TargetFileName)" "$(_IDADIR)\plugins"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -255,7 +255,7 @@ copy "$(OutDir)$(TargetFileName)" "$(_IDADIR)\plugins"</Command>
       <AdditionalOptions>/NOVCFEATURE /NOCOFFGRPINFO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>C:\Tools\peupdate\peupdate.exe -s -r -q "$(OutDir)$(TargetFileName)"
+      <Command>@if exist "%_TOOLS%\peupdate\peupdate.exe" ("%_TOOLS%\peupdate\peupdate.exe" -s -r -q "$(OutDir)$(TargetFileName)")
 copy "$(OutDir)$(TargetFileName)" "$(_IDADIR)\plugins"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
