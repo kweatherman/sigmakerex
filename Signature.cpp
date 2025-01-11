@@ -95,7 +95,7 @@ void OutputSignature(const SIG &sig, ea_t address, UINT32 offset)
 static inline BOOL isJmpCntl(UINT32 type) { return((type >= NN_ja) && (type <= NN_jz)); }             // Return TRUE if a conditional jump instruction
 static inline BOOL isJmpNotCntl(UINT32 type) { return((type >= NN_jmp) && (type <= NN_jmpshort)); }   // Return TRUE if a non-conditional jump instruction
 static inline BOOL isCall(UINT32 type) { return((type >= NN_call) && (type <= NN_callni)); }          // Return TRUE if is a call instruction
-static inline BOOL IsIdbAddress(ea_t address) { return((address >= inf.min_ea) && (address < inf.max_ea)); }  // Returns TRUE if address is inside this IDB
+static inline BOOL IsIdbAddress(ea_t address) { return((address >= inf_get_min_ea()) && (address < inf_get_max_ea())); }  // Returns TRUE if address is inside this IDB
 
 // Return the instruction operand offset if it has one
 static UINT32 OperandOffset(__in insn_t &cmd)
