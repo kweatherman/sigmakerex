@@ -1,7 +1,7 @@
 ﻿
 // Search for binary signature pattern support
 #include "SigMaker.h"
-
+#
 // Local search data container
 struct SearchData
 {
@@ -312,7 +312,7 @@ static SSTATUS SearchSignature(PBYTE input, size_t inputLen, const SIG &sig)
 	{
 		msg("\n** " __FUNCTION__ ": Sig not found! **\n");
 		qstring tmp;
-		sig.ToIdaString(tmp);
+		sig.ToIdaString(tmp, false);
 		msg("(%u) \"%s\"\n\n", (UINT32) sig.bytes.size(), tmp.c_str());
 	}
 
@@ -356,7 +356,7 @@ static SSTATUS SearchSignatureAVX2(PBYTE input, size_t inputLen, const SIG &sig)
 	{
 		msg("\n** " __FUNCTION__ ": Sig not found! **\n");
 		qstring tmp;
-		sig.ToIdaString(tmp);
+		sig.ToIdaString(tmp, false);
 		msg("(%u) \"%s\"\n\n", (UINT32) sig.bytes.size(), tmp.c_str());
 	}
 	return status;

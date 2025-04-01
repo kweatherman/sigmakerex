@@ -45,11 +45,21 @@ void OutputSignature(const SIG &sig, ea_t address, UINT32 offset)
 
 	// Always output IDA format
 	qstring tmp;
-	sig.ToIdaString(tmp);
-	msg("IDA: \"%s\"\n", tmp.c_str());
+	if (settings.outputFormat == SETTINGS::OF_IDA2)
+	{
+		sig.ToIdaString(tmp, true);
+		msg("IDA: \"%s\"\n", tmp.c_str());
+	}
+	else
+	{
+		sig.ToIdaString(tmp, false);
+		msg("IDA: \"%s\"\n", tmp.c_str());
+	}
 
 	switch (settings.outputFormat)
 	{
+	break;
+
 		// Escape encoded binary with ASCII mask "code" style in two strings.
 		// E.g. "\x33\x9A\xFA\x00\x00\x00\x00\x45\x68", "xxxxxxx????xx"
 		case SETTINGS::OF_CODE:
@@ -228,7 +238,7 @@ static void DumpFuncSiglets(__in func_t *pfn, __in SIGLETS &siglets)
 
 		msg("[%04u] " EAFORMAT ": ", i, current_ea);
 		qstring str;
-		siglet.ToIdaString(str);
+		siglet.ToIdaString(str, false);
 		msg("(%u) \"%s\"", size, str.c_str());
 		qstring disasm;
 		GetDisasmText(current_ea, disasm);
@@ -439,7 +449,7 @@ static ea_t FindMinimalFuncSig(ea_t start_ea, ea_t end_ea, __in const SIGLETS &s
 		for (SIGMATCH &c: canidates)
 		{
 			qstring str;
-			c.sig.ToIdaString(str);
+			c.sig.ToIdaString(str, false);
 			msg(EAFORMAT ": (%02u, %02u) '%s'\n", c.ea, c.size, c.wildcards, str.c_str());
 		}
 		WaitBox::processIdaEvents();
@@ -727,7 +737,7 @@ BOOL FindFuncXrefSig(ea_t func_ea)
 				for (SIGMATCH &c: canidates)
 				{
 					qstring str;
-					c.sig.ToIdaString(str);
+					c.sig.ToIdaString(str, false);
 					msg(EAFORMAT ": (%02u, %02u) '%s'\n", c.ea, c.size, c.wildcards, str.c_str());
 				}
 				msg("\n");
@@ -786,7 +796,7 @@ void CreateFunctionSig()
     if (settings.outputLevel >= SETTINGS::LL_VERBOSE)
     {
         qstring sigStr;
-        funcSig.ToIdaString(sigStr);
+        funcSig.ToIdaString(sigStr, false);
         msg("\nFull sig: \"%s\"\n\n", sigStr.c_str());
     }
 	WaitBox::processIdaEvents();
