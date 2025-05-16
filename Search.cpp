@@ -2,6 +2,8 @@
 // Search for binary signature pattern support
 #include "SigMaker.h"
 
+//#define FORCE_REF_SEARCH
+
 // Local search data container
 struct SearchData
 {
@@ -128,7 +130,7 @@ int memcmp_mask(const BYTE *buffer1, const BYTE *buffer2, const BYTE *mask2, siz
 	return 0;
 }
 
-// Find signiture pattern in memory
+// Find signature pattern in memory
 PBYTE FindSignatureAVX2(PBYTE data, size_t size, const SIG &sig, BOOL hasWildcards)
 {
 	const BYTE *pat = sig.bytes.data();
@@ -205,7 +207,7 @@ PBYTE FindSignatureAVX2(PBYTE data, size_t size, const SIG &sig, BOOL hasWildcar
 
 // ------------------------------------------------------------------------------------------------
 
-// Find signiture pattern in memory
+// Find signature pattern in memory
 // Base memory search reference, about 10x slower than the AVX2 version
 PBYTE FindSignature(PBYTE input, size_t inputLen, const SIG &sig, BOOL hasWildcards)
 {
@@ -362,22 +364,26 @@ static SSTATUS SearchSignatureAVX2(PBYTE input, size_t inputLen, const SIG &sig)
 	return status;
 }
 
-// Search for signiture pattern, returning a status result
+// Search for signature pattern, returning a status result
 SSTATUS SearchSignature(const SIG &sig)
 {
 	// Setup IDB RAM clone on first scan
 	if (!searchData.CloneIdb())
 		return SSTATUS::NOT_FOUND;
 
+	#ifndef FORCE_REF_SEARCH
 	if (searchData.hasAVX2)
 		return SearchSignatureAVX2(searchData.buffer, searchData.size, sig);
 	else
+	#else
+	#pragma message(__LOC2__ "   ** Force use reference search switch on! **")
+	#endif
 	{
 		static BOOL warnOnce = TRUE;
 		if ((settings.outputLevel >= SETTINGS::LL_VERBOSE) && warnOnce)
 		{
 			warnOnce = FALSE;
-			msg(__FUNCTION__ ": * Using non-AVX2 reference search *\n");
+			msg(" * Using non-AVX2 reference search *\n");
 		}
 
 		return SearchSignature(searchData.buffer, searchData.size, sig);
