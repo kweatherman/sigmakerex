@@ -5,7 +5,7 @@ Repo [Github](https://github.com/kweatherman/sigmakerex)
 
 ### Installation
 
-Copy `IDA_SigMaker32.dLL` and `IDA_SigMaker64.dLL` to your IDA `plugins` directory.
+Copy `IDA_SigMaker.dll` and to your IDA "plugins" directory.
 
 The default IDA hot key is "Ctrl-Alt-S", but can be set to another using key your IDA "plugins.cfg".
 Since "Ctrl-Alt-S" now combo conflicts with an IDA default, to avoid getting warning messages, edit your "idagui.cfg" and make the "StackTrace" entry like: `"StackTrace" = 0 // "Ctrl-Alt-S" // open stack trace window` (the '0' disables the key). 
