@@ -168,13 +168,34 @@ struct SIG
 	size_t wildcards() const
 	{
 		size_t count = 0;
+		size_t N = mask.size();
+		// Round up to next multiple of 16
+		size_t M = (N + 15) & ~size_t(15);
 
-		// TODO: Vectorize this functions for speed?
-		size_t size = bytes.size();
-		for (size_t i = 0; i < size; ++i)
+		// index = [0,1,2,...,15]
+		const __m128i index = _mm_setr_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+		const __m128i sign_flip = _mm_set1_epi8((char)0x80);
+
+		for (size_t i = 0; i < M; i += 16)
 		{
-			if (!mask[i])
-				count++;
+			__m128i chunk = _mm_loadu_si128(reinterpret_cast<const __m128i*>(&mask[i]));
+
+			uint32_t urem = static_cast<uint32_t>(N - i);
+			// saturate to [0..255], though N-i should always be >=0 here
+			if (urem > 255) urem = 255;
+			__m128i rem_vec = _mm_set1_epi8((char)urem);
+
+			// emulate unsigned compare: (urem > idx) ?
+			__m128i rem_flipped = _mm_xor_si128(rem_vec, sign_flip);
+			__m128i idx_flipped = _mm_xor_si128(index, sign_flip);
+			__m128i valid_mask = _mm_cmpgt_epi8(rem_flipped, idx_flipped);
+
+			// out-of-bounds -> 1, in-bounds -> chunk
+			__m128i data = _mm_blendv_epi8(_mm_set1_epi8(1), chunk, valid_mask);
+
+			__m128i cmp = _mm_cmpeq_epi8(data, _mm_setzero_si128());
+			int   bits = _mm_movemask_epi8(cmp);
+			count += _mm_popcnt_u32(bits);
 		}
 
 		return count;
