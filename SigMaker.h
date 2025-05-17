@@ -7,6 +7,8 @@
 
 #include "Settings.h"
 
+extern BOOL g_isAVX2Supported;
+
 // Minimal signature byte length
 static const UINT32 MIN_SIG_SIZE = 5;
 
@@ -169,12 +171,53 @@ struct SIG
 	{
 		size_t count = 0;
 
-		// TODO: Vectorize this functions for speed?
-		size_t size = bytes.size();
-		for (size_t i = 0; i < size; ++i)
+		if (g_isAVX2Supported)
 		{
-			if (!mask[i])
-				count++;
+			
+			size_t N = mask.size();
+
+			// Round up to next multiple of 32
+			size_t M = (N + 31) & ~size_t(31);
+
+			const __m256i index = _mm256_setr_epi8(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31);
+			const __m256i sign_flip = _mm256_set1_epi8((char)0x80);
+			const __m256i ones = _mm256_set1_epi8(1);
+			const __m256i zeros = _mm256_setzero_si256();
+
+			for (size_t i = 0; i < M; i += 32)
+			{
+				// Load up to 32 bytes
+				__m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(&mask[i]));
+
+				// Compute how many bytes are still valid in the mask
+				uint32_t urem = std::min<uint32_t>(N - i, 255);
+				__m256i rem_vec = _mm256_set1_epi8((char)urem);
+
+				// Mask out-of-bounds bytes
+				__m256i rem_flipped = _mm256_xor_si256(rem_vec, sign_flip);
+				__m256i idx_flipped = _mm256_xor_si256(index, sign_flip);
+				__m256i valid_mask = _mm256_cmpgt_epi8(rem_flipped, idx_flipped);
+
+				// For invalid bytes, insert 1 (so they're not zero)
+				__m256i data = _mm256_blendv_epi8(ones, chunk, valid_mask);
+
+				// Find wildcards (== 0)
+				__m256i cmp = _mm256_cmpeq_epi8(data, zeros);
+
+				// Count matching zero bytes
+				uint32_t bitmask = _mm256_movemask_epi8(cmp);
+				count += _mm_popcnt_u32(bitmask);
+			}
+		}
+		else
+		{
+			size_t size = bytes.size();
+			for (size_t i = 0; i < size; ++i)
+			{
+				if (!mask[i])
+					count++;
+			}
+
 		}
 
 		return count;

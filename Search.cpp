@@ -2,6 +2,9 @@
 // Search for binary signature pattern support
 #include "SigMaker.h"
 
+
+BOOL g_isAVX2Supported = 0;
+
 //#define FORCE_REF_SEARCH
 
 // Local search data container
@@ -75,6 +78,7 @@ struct SearchData
 	SearchData() : buffer(NULL), size(0)
 	{
 		hasAVX2 = TestAVX2Support();
+		g_isAVX2Supported = hasAVX2;
 	}
 	~SearchData()
 	{
