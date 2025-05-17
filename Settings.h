@@ -19,8 +19,8 @@ struct SETTINGS
 
 	enum OUTPUT_FORMAT: int
 	{
-		OF_IDA,		// IDA and others "AB 78 E8 ?? ?? ?? ?? CC" style spaced bytes with wildcards
-		OF_IDA2,    // IDA and others "AB 78 E8 ? ? ? ? CC" style spaced bytes with wildcards
+		OF_IDA,		// IDA and others "AB 78 E8 ?? ?? ?? ?? CC" style spaced bytes with double "??" wildcard
+		OF_IDA2,    // "" but with a single '?' wildcard char
 		OF_CODE,	// Escape encoded binary with ASCII mask "code" style in two strings.
 					// E.g. "\x33\x9A\xFA\x00\x00\x00\x00\x45\x68", "xxxxxxx????xx"
 		OF_INLINE,	// Like "code" style, but byte string with inlined bytes w/wildcard

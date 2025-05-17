@@ -43,23 +43,21 @@ void OutputSignature(const SIG &sig, ea_t address, UINT32 offset)
 	else
 		msg("SIG: 0x%llX, @ Offset: 0x%X, %u bytes, %u wildcards\n", address, offset, (UINT32) sig.bytes.size(), (UINT32) sig.wildcards());
 
-	// Always output IDA format
-	qstring tmp;
+	// Always output IDA format at minimal
+	qstring tmp;	
 	if (settings.outputFormat == SETTINGS::OF_IDA2)
 	{
-		sig.ToIdaString(tmp, true);
+		sig.ToIdaString(tmp, TRUE);
 		msg("IDA: \"%s\"\n", tmp.c_str());
 	}
 	else
 	{
-		sig.ToIdaString(tmp, false);
+		sig.ToIdaString(tmp);
 		msg("IDA: \"%s\"\n", tmp.c_str());
 	}
 
 	switch (settings.outputFormat)
-	{
-	break;
-
+	{	
 		// Escape encoded binary with ASCII mask "code" style in two strings.
 		// E.g. "\x33\x9A\xFA\x00\x00\x00\x00\x45\x68", "xxxxxxx????xx"
 		case SETTINGS::OF_CODE:
@@ -233,7 +231,7 @@ static void DumpFuncSiglets(__in func_t *pfn, __in SIGLETS &siglets)
 
 		msg("[%04u] %llX: ", i, current_ea);
 		qstring str;
-		siglet.ToIdaString(str, false);
+		siglet.ToIdaString(str);
 		msg("(%u) \"%s\"", size, str.c_str());
 		qstring disasm;
 		getDisasmText(current_ea, disasm);
@@ -447,7 +445,7 @@ static ea_t FindMinimalFuncSig(ea_t start_ea, ea_t end_ea, __in const SIGLETS &s
 		for (SIGMATCH &c: canidates)
 		{
 			qstring str;
-			c.sig.ToIdaString(str, false);
+			c.sig.ToIdaString(str);
 			msg("%llX: (%02u, %02u) '%s'\n", c.ea, c.size, c.wildcards, str.c_str());
 		}
 		WaitBox::processIdaEvents();
@@ -735,7 +733,7 @@ BOOL FindFuncXrefSig(ea_t func_ea)
 				for (SIGMATCH &c: canidates)
 				{
 					qstring str;
-					c.sig.ToIdaString(str, false);
+					c.sig.ToIdaString(str);
 					msg("%llX: (%02u, %02u) '%s'\n", c.ea, c.size, c.wildcards, str.c_str());
 				}
 				msg("\n");
@@ -794,7 +792,7 @@ void CreateFunctionSig()
     if (settings.outputLevel >= SETTINGS::LL_VERBOSE)
     {
         qstring sigStr;
-        funcSig.ToIdaString(sigStr, false);
+        funcSig.ToIdaString(sigStr);
         msg("\nFull sig: \"%s\"\n\n", sigStr.c_str());
     }
 	WaitBox::processIdaEvents();

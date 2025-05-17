@@ -57,7 +57,7 @@ struct SIG
     // ------------------------------------------------------------------------
 
     // Output the sig as a "F8 66 4B ?? ?? ?? 88" format string or "F8 66 4B ? ? ? 88"
-    void ToIdaString(__out qstring &string, bool singleByteWildCard) const
+    void ToIdaString(__out qstring &string, BOOL singleByteWildCard = FALSE) const
     {
         size_t count = bytes.size();
         if (count > 0)

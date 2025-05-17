@@ -42,7 +42,7 @@ static void idaapi OnOptionButton(int button_code, form_actions_t& fa)
 
 	    qstrvec_t outputFormatArray;
         outputFormatArray.push_back("IDA (Default)");
-        outputFormatArray.push_back("IDA (With Single Byte WildCards)");
+        outputFormatArray.push_back("IDA (With single '?' wildcards)");
         outputFormatArray.push_back("Code style");
         outputFormatArray.push_back("Inline byte");
 
