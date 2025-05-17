@@ -1,4 +1,0 @@
-
-# Store the WaitBoxEx libs and pdb files as binary
-*.lib merge=binary
-*.pdb merge=binary

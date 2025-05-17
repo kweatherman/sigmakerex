@@ -144,7 +144,7 @@ struct SIG
 		}
 	}
 
-	// Right trim wildcards from signiture if they exist
+	// Right trim wildcards from signature if they exist
 	void trim()
 	{
 		size_t len = 0;

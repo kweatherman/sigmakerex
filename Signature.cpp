@@ -39,9 +39,9 @@ typedef std::vector<SIG> SIGLETS;
 void OutputSignature(const SIG &sig, ea_t address, UINT32 offset)
 {
 	if (offset == 0)
-		msg("SIG: 0x" EAFORMAT ", %u bytes %u, wildcards.\n", address, (UINT32) sig.bytes.size(), (UINT32) sig.wildcards());
+		msg("SIG: 0x%llX, %u bytes %u, wildcards.\n", address, (UINT32) sig.bytes.size(), (UINT32) sig.wildcards());
 	else
-		msg("SIG: 0x" EAFORMAT ", @ Offset: 0x%X, %u bytes, %u wildcards\n", address, offset, (UINT32) sig.bytes.size(), (UINT32) sig.wildcards());
+		msg("SIG: 0x%llX, @ Offset: 0x%X, %u bytes, %u wildcards\n", address, offset, (UINT32) sig.bytes.size(), (UINT32) sig.wildcards());
 
 	// Always output IDA format
 	qstring tmp;
@@ -131,14 +131,9 @@ static ea_t LargestOperandValue(insn_t &cmd, ea_t test_ea)
 	// IDA conveniently returns absolute addresses (not relative ones)
 
 	// TODO: For the sign assumptions here, could check for AWE aware flag (PE header flag IMAGE_FILE_LARGE_ADDRESS_AWARE) for 32bit targets
-    // Rare PE header flag for 32bit but a possibility still.
-    #ifndef __EA64__
-    static const ea_t HIGH_BIT = 0x80000000;
-    #else
-    static const ea_t HIGH_BIT = 0x8000000000000000;
-    #endif
-
-    ea_t result = 0;
+    // Rare PE header flag for 32bit but a possibility still.   
+	static ea_t HIGH_BIT = (inf_is_64bit() ? 0x8000000000000000 : 0x80000000);
+	ea_t result = 0;
 
     for (UINT32 i = 0; i < UA_MAXOP; i++)
     {
@@ -149,7 +144,7 @@ static ea_t LargestOperandValue(insn_t &cmd, ea_t test_ea)
         {
             ea_t value = (ea_t) cmd.ops[i].value;
             //if ((value & HIGH_BIT) && (type == o_imm))
-            //    msg(EAFORMAT " v: " EAFORMAT "\n", test_ea, value);
+            //    msg(EAFORMAT " v: %llX\n", test_ea, value);
 
             // Ignore signed immediate value, assume it's a flag value that can be ignored
             if (!((value & HIGH_BIT) && (type == o_imm)))
@@ -163,7 +158,7 @@ static ea_t LargestOperandValue(insn_t &cmd, ea_t test_ea)
                     result = adress;
 
             //if (result & HIGH_BIT)
-            //    msg(EAFORMAT " " EAFORMAT " " EAFORMAT " t: %d\n", test_ea, value, adress, type);
+            //    msg(EAFORMAT " %llX %llX t: %d\n", test_ea, value, adress, type);
         }
     }
 
@@ -227,7 +222,7 @@ static void DumpFuncSiglets(__in func_t *pfn, __in SIGLETS &siglets)
 {
 	qstring name;
 	get_func_name(&name, pfn->start_ea);
-	msg("--------------------- " EAFORMAT " '%s' ---------------------\n", pfn->start_ea, name.c_str());
+	msg("--------------------- 0x%llX '%s' ---------------------\n", pfn->start_ea, name.c_str());
 
 	ea_t current_ea = pfn->start_ea;
 	size_t count = siglets.size();
@@ -236,17 +231,17 @@ static void DumpFuncSiglets(__in func_t *pfn, __in SIGLETS &siglets)
 		SIG &siglet = siglets[i];
 		UINT32 size = (UINT32) siglet.bytes.size();
 
-		msg("[%04u] " EAFORMAT ": ", i, current_ea);
+		msg("[%04u] %llX: ", i, current_ea);
 		qstring str;
 		siglet.ToIdaString(str, false);
 		msg("(%u) \"%s\"", size, str.c_str());
 		qstring disasm;
-		GetDisasmText(current_ea, disasm);
+		getDisasmText(current_ea, disasm);
 		msg("  '%s'\n", disasm.c_str());
 		current_ea += size;
 	}
 
-	msg("--------------------- " EAFORMAT " '%s' ---------------------\n", pfn->end_ea, name.c_str());
+	msg("--------------------- 0x%llX '%s' ---------------------\n", pfn->end_ea, name.c_str());
 }
 
 // Decode instruction into a siglet
@@ -261,28 +256,28 @@ static int InstToSig(__in_opt func_t *pfn, ea_t current_ea, __out SIG &siglet)
 	{
 		// Decode failure
 		// TODO: Fix bad instruction cases if/when encountered
-		msg(MSG_TAG "** " __FUNCTION__ ": Decode failure @ 0x" EAFORMAT "! decodeSize: %d, itemSize: %d **\n", current_ea, decodeSize, itemSize);
+		msg(MSG_TAG "** " __FUNCTION__ ": Decode failure @ 0x%llX! decodeSize: %d, itemSize: %d **\n", current_ea, decodeSize, itemSize);
 		return -1;
 	}
 
 	if (decodeSize != itemSize)
 	{
 		// 99% of the time these are just "align" blocks
-		flags_t flags = get_flags_ex(current_ea, 0);
+		flags64_t flags = get_flags_ex(current_ea, 0);
 		if (is_align(flags))
 		{
-			// Wildcard the itemSize count of bytes
+			// Wild card the itemSize count of bytes
 			siglet.AddWildcards(itemSize);
 		}
 		else
 		{
 			// TODO: Fix more anomalous instruction cases as they encountered..
-			msg(MSG_TAG "* " __FUNCTION__ ": Decode anomaly @ 0x" EAFORMAT "! decodeSize: %d, itemSize: %d *\n", current_ea, decodeSize, itemSize);
+			msg(MSG_TAG "* " __FUNCTION__ ": Decode anomaly @ 0x%llX! decodeSize: %d, itemSize: %d *\n", current_ea, decodeSize, itemSize);
 			qstring outbuf;
-			IdaFlags2String(flags, outbuf);
+			idaFlags2String(flags, outbuf);
 			msg(" F: %08X, \"%s\"\n", flags, outbuf.c_str());
 			qstring disasm;
-			GetDisasmText(current_ea, disasm);
+			getDisasmText(current_ea, disasm);
 			msg(" '%s'\n\n", disasm.c_str());
 			return -1;
 		}
@@ -320,7 +315,7 @@ static BOOL FuncToSiglets(__in func_t *pfn, __out SIGLETS &siglets)
 		if ((current_ea != expected_ea) && (expected_ea != BADADDR))
 		{
 			// We'll stop here, keep what we have, and return
-			msg(MSG_TAG "* Into non-contiguous chunk @ 0x" EAFORMAT ", expected " EAFORMAT ". Signature truncated. * \n", current_ea, expected_ea);
+			msg(MSG_TAG "* Into non-contiguous chunk @ 0x%llX, expected 0x%llX. Signature truncated. * \n", current_ea, expected_ea);
 			break;
 		}
 
@@ -344,6 +339,9 @@ static void BuildFuncSig(__in const SIGLETS &siglets, __out SIG &sig)
 {
 	for (const SIG &siglet: siglets)
 		sig += siglet;
+
+	// Trim any right side wildcards to make signature smaller
+	sig.trim();
 }
 
 // Look for a unique sig at given function siglet boundary position
@@ -375,7 +373,7 @@ static ea_t FindSigAtFuncAddress(ea_t current_ea, ea_t end_ea, size_t sigIndex, 
 			size_t nonMaskSize = (sigByteSize - sig.wildcards());
 			if (nonMaskSize > 1)
 			{
-				// Make a trimmed temp copy for further testing and faster scan speed
+				// Make a trimmed temp copy for further testing and faster scanning speed
 				SIG tmp = sig;
 				tmp.trim();
 
@@ -450,7 +448,7 @@ static ea_t FindMinimalFuncSig(ea_t start_ea, ea_t end_ea, __in const SIGLETS &s
 		{
 			qstring str;
 			c.sig.ToIdaString(str, false);
-			msg(EAFORMAT ": (%02u, %02u) '%s'\n", c.ea, c.size, c.wildcards, str.c_str());
+			msg("%llX: (%02u, %02u) '%s'\n", c.ea, c.size, c.wildcards, str.c_str());
 		}
 		WaitBox::processIdaEvents();
 	}
@@ -614,10 +612,10 @@ static ea_t FindSigAtAddress(ea_t current_ea, __out SIG &outsig)
 	while (TRUE)
 	{
 		// Bail if we are no longer inside of a valid code space
-		flags_t flags = get_flags_ex(current_ea, 0);
+		flags64_t flags = get_flags_ex(current_ea, 0);
 		if (!is_code(flags))
 		{
-			LOG_VERBOSE(__FUNCTION__ ": 0x" EAFORMAT " no longer in a valid code space.\n", current_ea);
+			LOG_VERBOSE(__FUNCTION__ ": 0x%llX no longer in a valid code space.\n", current_ea);
 			break;
 		}
 
@@ -627,7 +625,7 @@ static ea_t FindSigAtAddress(ea_t current_ea, __out SIG &outsig)
 		//if(get_func(current_ea))
 		if (is_func(flags))
 		{
-			LOG_VERBOSE(__FUNCTION__ ": 0x" EAFORMAT " walked into a function.\n", current_ea);
+			LOG_VERBOSE(__FUNCTION__ ": 0x%llX walked into a function.\n", current_ea);
 			break;
 		}
 
@@ -697,7 +695,7 @@ BOOL FindFuncXrefSig(ea_t func_ea)
 			func_t *pfn = get_func(ref_ea);
 			if (pfn)
 			{
-				LOG_VERBOSE("[%u] Function ref @ 0x" EAFORMAT ", Func: 0x" EAFORMAT "\n", sigCount, ref_ea, pfn->start_ea);
+				LOG_VERBOSE("[%u] Function ref @ 0x%llX, Func: 0x%llX\n", sigCount, ref_ea, pfn->start_ea);
 
 				// Look for a unique sig from reference branch down
 				SIG sig;
@@ -705,7 +703,7 @@ BOOL FindFuncXrefSig(ea_t func_ea)
 				if (sig_ea != BADADDR)
 				{
 					// Save candidate
-					SIGMATCH canidate(sig, sig_ea);
+					SIGMATCH canidate(sig, ref_ea);
 					canidates.push_back(canidate);
 
 					// The ref sigs are going to start with the reference branch instruction.
@@ -738,7 +736,7 @@ BOOL FindFuncXrefSig(ea_t func_ea)
 				{
 					qstring str;
 					c.sig.ToIdaString(str, false);
-					msg(EAFORMAT ": (%02u, %02u) '%s'\n", c.ea, c.size, c.wildcards, str.c_str());
+					msg("%llX: (%02u, %02u) '%s'\n", c.ea, c.size, c.wildcards, str.c_str());
 				}
 				msg("\n");
 				WaitBox::processIdaEvents();
@@ -779,7 +777,7 @@ void CreateFunctionSig()
     // Convert function into a instruction "siglets" for analysis
 	msg("\n");
     msg(MSG_TAG "Finding function signature.\n");
-	TIMESTAMP procStart = GetTimestamp();
+	TIMESTAMP procStart = GetTimeStamp();
     SIGLETS siglets;
     if (FuncToSiglets(pfn, siglets))
     {
@@ -828,7 +826,6 @@ void CreateFunctionSig()
 
 			msg("Function ");
 			OutputSignature(outsig, sig_ea, offset);
-
 		}
     }
 	else
@@ -841,7 +838,7 @@ void CreateFunctionSig()
 
 	exit:;
 	WaitBox::hide();
-    LOG_VERBOSE("Took %.3f seconds.\n", (GetTimestamp() - procStart));
+    LOG_VERBOSE("Took %.3f seconds.\n", (GetTimeStamp() - procStart));
 	WaitBox::processIdaEvents();
 }
 
@@ -860,18 +857,18 @@ void CreateAddressSig()
 	}
 
 	msg("\n");
-	msg(MSG_TAG "Finding signature for " EAFORMAT ".\n", ea_selection);
+	msg(MSG_TAG "Finding signature for 0x%llX.\n", ea_selection);
 	WaitBox::show("SigMakerEx", "Working..");
 	WaitBox::updateAndCancelCheck(-1);
 	WaitBox::processIdaEvents();
-	TIMESTAMP procStart = GetTimestamp();
+	TIMESTAMP procStart = GetTimeStamp();
 
 	// Ideally the address will be inside a function for better instruction analysis. Will typically
 	// be the case, but not a requirement here.
 	func_t *pfn = get_func(ea_selection);
 	if (pfn)
 	{
-		LOG_VERBOSE("Selected address 0x" EAFORMAT " is inside function 0x" EAFORMAT "\n", ea_selection, pfn->start_ea);
+		LOG_VERBOSE("Selected address 0x%llX is inside function 0x%llX\n", ea_selection, pfn->start_ea);
 
 		// Look for a minimal unique sig from address selection down
 		SIG sig;
@@ -882,12 +879,12 @@ void CreateAddressSig()
 			OutputSignature(sig, ea_selection, 0);
 		}
 		else
-			msg(MSG_TAG "* Failed to find unique signiture at address. *\n");
+			msg(MSG_TAG "* Failed to find unique signature at address. *\n");
 	}
 	else
 	{
 		// The not inside a function version
-		LOG_VERBOSE("Selected address 0x" EAFORMAT " is NOT inside a function.", ea_selection);
+		LOG_VERBOSE("Selected address 0x%llX is NOT inside a function.", ea_selection);
 
 		SIG sig;
 		ea_t sig_ea = FindSigAtAddress(ea_selection, sig);
@@ -897,11 +894,11 @@ void CreateAddressSig()
 			OutputSignature(sig, ea_selection, 0);
 		}
 		else
-			msg(MSG_TAG "* Failed to find unique signiture at address. *\n");
+			msg(MSG_TAG "* Failed to find unique signature at address. *\n");
 	}
 
 	WaitBox::hide();
-	LOG_VERBOSE("Took %.3f seconds.\n", (GetTimestamp() - procStart));
+	LOG_VERBOSE("Took %.3f seconds.\n", (GetTimeStamp() - procStart));
 	WaitBox::processIdaEvents();
 }
 
@@ -920,9 +917,9 @@ void CreateAddressRangeSig()
 		}
 
 		msg("\n");
-		msg(MSG_TAG "Creating signiture from " EAFORMAT " to " EAFORMAT ".\n", start_ea, end_ea);
+		msg(MSG_TAG "Creating signature from 0x%llX to 0x%llX.\n", start_ea, end_ea);
 		WaitBox::processIdaEvents();
-		TIMESTAMP procStart = GetTimestamp();
+		TIMESTAMP procStart = GetTimeStamp();
 
         // Iterate instructions over range.
 		SIG sig;
@@ -952,7 +949,7 @@ void CreateAddressRangeSig()
 			OutputSignature(sig, start_ea, 0);
 		}
 
-		LOG_VERBOSE("Took %.3f seconds.\n", (GetTimestamp() - procStart));
+		LOG_VERBOSE("Took %.3f seconds.\n", (GetTimeStamp() - procStart));
 	}
 	else
 	{

@@ -4,18 +4,18 @@
     <ClCompile Include="Signature.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Search.cpp" />
-    <ClCompile Include="Utility.cpp">
+    <ClCompile Include="..\IDA_Support\Utility\Utility.cpp">
       <Filter>Support</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h" />
-    <ClInclude Include="Utility.h">
-      <Filter>Support</Filter>
-    </ClInclude>
     <ClInclude Include="SigMaker.h" />
     <ClInclude Include="Settings.h" />
-    <ClInclude Include="WaitBoxEx\WaitBoxEx.h">
+    <ClInclude Include="..\IDA_Support\IDA_WaitEx\include\WaitBoxEx.h">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IDA_Support\Utility\Utility.h">
       <Filter>Support</Filter>
     </ClInclude>
   </ItemGroup>

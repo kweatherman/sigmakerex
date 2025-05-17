@@ -164,7 +164,7 @@ static bool idaapi run(size_t arg)
                 "Create signature:\n"
                 "<#Attempt to create a unique function signature for selected address at or inside the function.#Function:R>\n"
                 "<#Attempt to create a unique signature at selected address.#At address:R>\n"
-                "<#Create a raw signiture for selected adress range, unique or not.#From address range           \t:R>>\n\n"
+                "<#Create a raw signature for selected adress range, unique or not.#From address range           \t:R>>\n\n"
 
                 "<#Options:B::>\n"
                 " \n"
@@ -183,7 +183,7 @@ static bool idaapi run(size_t arg)
         else
             action -= 1;
 
-        switch ((SIG_ACTION)action)
+        switch ((SIG_ACTION) action)
         {
             // Attempt to create an ideal function signature
             case CREATE_FUNCTION_SIG:

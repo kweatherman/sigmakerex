@@ -1,10 +1,11 @@
 ## SigMakerEx
 
 Enhanced IDA Pro signature generator plugin.
+Repo [Github](https://github.com/kweatherman/sigmakerex)
 
 ### Installation
 
-Copy `IDA_SigMaker32.dLL` and `IDA_SigMaker64.dLL` to your IDA `plugins` directory.
+Copy `IDA_SigMaker.dll` and to your IDA "plugins" directory.
 
 The default IDA hot key is "Ctrl-Alt-S", but can be set to another using key your IDA "plugins.cfg".
 Since "Ctrl-Alt-S" now combo conflicts with an IDA default, to avoid getting warning messages, edit your "idagui.cfg" and make the "StackTrace" entry like: `"StackTrace" = 0 // "Ctrl-Alt-S" // open stack trace window` (the '0' disables the key). 
@@ -107,6 +108,18 @@ Python 3.7'ish or better to run the "byte_frequency_tabulate.py" script.
 Thanks to the creator of the original SigMaker tool back from the gamedeception.net days up to the current C/C++ and Python iteration authors:  P4TR!CK, bobbysing, xero|hawk, ajkhoury, and zoomgod et al.
 Thanks to Wojciech Mula for his SIMD programming resources.
 
-### License
 
-Released under MIT © 2022 By Kevin Weatherman
+----
+
+##### License
+
+**MIT License**
+Copyright © 2009–present Kevin Weatherman  
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+See [MIT License](http://www.opensource.org/licenses/mit-license.php) for full details.

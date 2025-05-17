@@ -18,6 +18,9 @@
 #pragma warning(push)
 #pragma warning(disable:4244) // "conversion from 'ssize_t' to 'int', possible loss of data"
 #pragma warning(disable:4267) // "conversion from 'size_t' to 'uint32', possible loss of data"
+#pragma warning(disable:4146) // "unary minus operator applied to unsigned type, result still unsigned"
+#pragma warning(disable:4018) // warning C4018: '<': signed/unsigned mismatch
+
 #include <ida.hpp>
 #include <bytes.hpp>
 #include <allins.hpp>
@@ -32,4 +35,4 @@
 
 #include "WaitBoxEx.h"
 
-#define MY_VERSION MAKE_SEMANTIC_VERSION(VERSION_RELEASE, 1, 1, 2)
+#define MY_VERSION MAKE_SEMANTIC_VERSION(VERSION_RELEASE, 1, 2, 0)

@@ -60,6 +60,8 @@ struct SETTINGS
 		maskByte = 0xAE; // Default, one of the least common code byte frequency values
 	}
 
+	template <class T> void CLAMP(T& x, T min, T max) { if (x < min) x = min; else if (x > max) x = max; }
+
 	void Validate()
 	{
 		CLAMP(funcCriteria, SETTINGS::FUNC_ENTRY_POINT, SETTINGS::FUNC_FULL);
@@ -82,7 +84,9 @@ struct SETTINGS
 
 	void Load()
 	{
-		__try
+		Default();
+
+		try
 		{
 			char path[MAXSTR];
 			qsnprintf(path, MAXSTR - 1, "%s\\%s", get_user_idadir(), SETTINGS_FILENAME);
@@ -102,10 +106,7 @@ struct SETTINGS
 					Validate();
 			}
 		}
-		__except (ReportException(__FUNCTION__, GetExceptionInformation()))
-		{
-			Default();
-		}
+		CATCH()
 	}
 };
 
