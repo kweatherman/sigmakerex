@@ -56,23 +56,41 @@ struct SIG
 
     // ------------------------------------------------------------------------
 
-    // Output the sig as a "F8 66 4B ?? ?? ?? 88" format string
-    void ToIdaString(__out qstring &string) const
+    // Output the sig as a "F8 66 4B ?? ?? ?? 88" format string or "F8 66 4B ? ? ? 88"
+    void ToIdaString(__out qstring &string, bool singleByteWildCard) const
     {
         size_t count = bytes.size();
         if (count > 0)
         {
-			string.reserve(count * SIZESTR("?? "));
-            for (size_t i = 0; i < count; i++)
-            {
-                if (mask[i])
-                    string.cat_sprnt("%02X ", bytes[i]);
-                else
-                    string.cat_sprnt("?? ");
-            }
+			if (singleByteWildCard)
+			{
+				string.reserve(count * SIZESTR("? "));
+				for (size_t i = 0; i < count; i++)
+				{
+					if (mask[i])
+						string.cat_sprnt("%02X ", bytes[i]);
+					else
+						string.cat_sprnt("? ");
+				}
 
-			// Remove the final ' ' space
-            string.remove_last();
+				// Remove the final ' ' space
+				string.remove_last();
+
+			}
+			else
+			{
+				string.reserve(count * SIZESTR("?? "));
+				for (size_t i = 0; i < count; i++)
+				{
+					if (mask[i])
+						string.cat_sprnt("%02X ", bytes[i]);
+					else
+						string.cat_sprnt("?? ");
+				}
+
+				// Remove the final ' ' space
+				string.remove_last();
+			}
         }
     }
 
