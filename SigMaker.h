@@ -172,8 +172,7 @@ struct SIG
 		size_t count = 0;
 
 		if (g_isAVX2Supported)
-		{
-			
+		{			
 			size_t N = mask.size();
 
 			// Round up to next multiple of 32
@@ -190,8 +189,8 @@ struct SIG
 				__m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(&mask[i]));
 
 				// Compute how many bytes are still valid in the mask
-				uint32_t urem = std::min<uint32_t>(N - i, 255);
-				__m256i rem_vec = _mm256_set1_epi8((char)urem);
+				uint32_t urem = std::min<uint32_t>(static_cast<uint32_t>(N - i), 255);
+				__m256i rem_vec = _mm256_set1_epi8((char) urem);
 
 				// Mask out-of-bounds bytes
 				__m256i rem_flipped = _mm256_xor_si256(rem_vec, sign_flip);
@@ -217,7 +216,6 @@ struct SIG
 				if (!mask[i])
 					count++;
 			}
-
 		}
 
 		return count;

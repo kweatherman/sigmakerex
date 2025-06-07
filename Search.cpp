@@ -3,7 +3,7 @@
 #include "SigMaker.h"
 
 
-BOOL g_isAVX2Supported = 0;
+BOOL g_isAVX2Supported = FALSE;
 
 //#define FORCE_REF_SEARCH
 
@@ -74,11 +74,9 @@ struct SearchData
 		return FALSE;
 	}
 
-	BOOL hasAVX2;
 	SearchData() : buffer(NULL), size(0)
 	{
-		hasAVX2 = TestAVX2Support();
-		g_isAVX2Supported = hasAVX2;
+		g_isAVX2Supported = TestAVX2Support();
 	}
 	~SearchData()
 	{
@@ -376,7 +374,7 @@ SSTATUS SearchSignature(const SIG &sig)
 		return SSTATUS::NOT_FOUND;
 
 	#ifndef FORCE_REF_SEARCH
-	if (searchData.hasAVX2)
+	if (g_isAVX2Supported)
 		return SearchSignatureAVX2(searchData.buffer, searchData.size, sig);
 	else
 	#else
