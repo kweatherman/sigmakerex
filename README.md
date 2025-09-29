@@ -10,7 +10,7 @@ Copy `IDA_SigMaker.dll` and to your IDA "plugins" directory.
 The default IDA hot key is "Ctrl-Alt-S", but can be set to another using key your IDA "plugins.cfg".
 Since "Ctrl-Alt-S" now combo conflicts with an IDA default, to avoid getting warning messages, edit your "idagui.cfg" and make the "StackTrace" entry like: `"StackTrace" = 0 // "Ctrl-Alt-S" // open stack trace window` (the '0' disables the key). 
 
-Requires IDA Pro version 7.6'ish.
+Requires IDA Pro version 9.2'ish.
 
 ### Using
 Invoke the plugin via its hotkey or via the IDA Edit/Plugin menu.
@@ -98,8 +98,8 @@ In a visual correlation of the two, 0xA2 is actually the least common denominato
 
 ### Building
 
-Built using Visual Studio 2019, on Windows 10, with the only dependency being the official IDA Pro C/C++ SDK.
-Setup in the project file, it looks for an environment variable `_IDADIR` from which it expects to find a "idasdk/include" and a "idasdk/lib" folder where the IDA SDK is located. Not using `IDADIR` since IDA looks for it itself and can cause a conflict if you try to use more than one installed IDA version.
+Built using Visual Studio 2022, on Windows 11, with the only dependency being the official IDA Pro C/C++ SDK.
+Setup in the project file, it looks for an environment variable `_IDADIR` from which it expects to find a "idasdk/src/include" and a "idasdk/src/lib" folder where the IDA SDK is located. Not using `IDADIR` since IDA looks for it itself and can cause a conflict if you try to use more than one installed IDA version.
 
 Python 3.7'ish or better to run the "byte_frequency_tabulate.py" script.
 
